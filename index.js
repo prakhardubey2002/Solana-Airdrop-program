@@ -15,12 +15,23 @@ const getWalletBalance = async () => {
     try {
         const connection = new Connection(clusterApiUrl('devnet'),'confirmed');//connection to devenet intialised
         const WalletBalance= await connection.getBalance(publicKey);
-        console.log(`Wallet balance is ${WalletBalance}`);
+        console.log(`Wallet balance is ${WalletBalance/LAMPORTS_PER_SOL}`);// returned value is in LAMPORTPERSOL so to convert it in sol it is devided by lamportpersol 
     } catch (err) {
         console.error(err)//error thrown to console if any
     }
 }
+const airDropSol= async() =>{
+    try{
+        const connection = new Connection(clusterApiUrl('devnet'),'confirmed');
+        const fromAirDropSignature = await connection.requestAirdrop(publicKey,2*LAMPORTS_PER_SOL);//add cost to publickey wallet 
+        await connection.confirmTransaction(fromAirDropSignature);//confirm Transaction
+    }catch(err){
+        console.log(err)
+    }
+}
 const main= async () =>{
+    await getWalletBalance()
+    await airDropSol()
     await getWalletBalance()
 }
 main();
